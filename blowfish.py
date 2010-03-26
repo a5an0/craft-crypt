@@ -1,5 +1,5 @@
 # blowfish.py - a pure-python implementation of Blowfish
-#   as specified here: http://www.schneier.com/paper-blowfish-fse.html
+#   as described here: http://www.schneier.com/paper-blowfish-fse.html
 #
 # Copyright (C) 2010  Alex Schoof
 #
@@ -20,7 +20,7 @@
 from blowfish_constants import *
 ROUNDS = 16 # You shouldn't change this unless you have a good reason
 #CONSTANTS_FILE = 'blowfish_constants.py'
-S, P = sboxes, [0]*18
+S, P = sboxes, parray
 
 def strToInt(m):
     """ Pack 4-char string m into a int for use in blowfish """
@@ -113,7 +113,6 @@ def F(x):
     b = x & 0x00FF
     x >>= 8
     a = x & 0x00FF
-#    print a, b, c, d
     f = (S[0][a] + S[1][b] ^ S[2][c]) + S[3][d]
     return f
     
