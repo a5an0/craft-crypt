@@ -17,7 +17,52 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+ROUNDS = 16 # You shouldn't change this unless you have a good reason
+CONSTANTS_FILE = 'blowfish_constants.py'
+
+def encrypt(xL, xR):
+    """ 
+    Encrypt two plaintext halves xL and xR using the generated subkeys. 
+    Returns the encrytped halves 
+    """
+    # Work through the Feistel network
+    for i in range(ROUNDS):
+        xL ^= P[i]
+        xR = F(xL) ^ xR
+        tmp = xL
+        xL = xR
+        xR = tmp
+    # undo last swap
+    tmp = xL
+    xL = xR
+    xR = tmp
+    xR ^= P[ROUNDS]
+    xL ^= P[ROUNDS+1]
+    return xL, xR
+
+def decrypt(xL, xR):
+    """ 
+    Decrypt two ciphertext halves xL and xR using the generated subkeys. 
+    Returns the decrypted halves 
+    """
+    # Work through the Feistel network
+    for i in range(ROUNDS):
+        xL ^= P[-(i+1)]
+        xR = F(xL) ^ xR
+        tmp = xL
+        xL = xR
+        xR = tmp
+    # undo last swap
+    tmp = xL
+    xL = xR
+    xR = tmp
+    xR ^= P[1]
+    xL ^= P[0]
+    return xL, xR
+    
+
 def F(x):
+    """ F function used in each round """
     d = x & 0x00FF
     x >>= 8
     c = x & 0x00FF
