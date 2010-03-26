@@ -19,7 +19,6 @@
 
 from blowfish_constants import *
 ROUNDS = 16 # You shouldn't change this unless you have a good reason
-#CONSTANTS_FILE = 'blowfish_constants.py'
 S, P = sboxes, parray
 
 def strToInt(m):
