@@ -19,6 +19,7 @@
 
 ROUNDS = 16 # You shouldn't change this unless you have a good reason
 CONSTANTS_FILE = 'blowfish_constants.py'
+S, P = []
 
 def encrypt(xL, xR):
     """ 
@@ -59,7 +60,32 @@ def decrypt(xL, xR):
     xR ^= P[1]
     xL ^= P[0]
     return xL, xR
-    
+
+def genSubkeys(key):
+    """ Use key to generate all the subkeys needed for encryption/decryption """
+    S = sboxes
+    # Generate P-Boxes needed for subkey generation
+    j = 0
+    for i in range(ROUNDS+2):
+        data = 0L
+        for k in range(4):
+            data = (data << 8) | ord(key[j])
+            j += 1
+            if (j >= len(key)):
+                j = 0
+        P[i] = parray[i] ^ data
+    # Generate subkey P-Boxes
+    datal, datar = 0L, 0L
+    for i in range(ROUNDS+2):
+        datal, datar = encrypt(datal, datar)
+        P[i] = datal
+        P[i+1] = datar
+    # Generate  subkey S-boxes
+    for i in range(4):
+        for j in range(256):
+            datal, datar = encrypt(datal, datar)
+            S[i][j] = datal
+            S[i][j+1] = datar
 
 def F(x):
     """ F function used in each round """
