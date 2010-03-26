@@ -17,9 +17,26 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+from blowfish_constants import *
 ROUNDS = 16 # You shouldn't change this unless you have a good reason
-CONSTANTS_FILE = 'blowfish_constants.py'
-S, P = []
+#CONSTANTS_FILE = 'blowfish_constants.py'
+S, P = sboxes, [0]*18
+
+def strToInt(m):
+    """ Pack 4-char string m into a int for use in blowfish """
+    n = 0
+    for i in range(4):
+        n <<= 8
+        n |= ord(m[i])
+    return n
+
+def intToString(m):
+    """ Unpack a 32-bit int to a string for use in blowfish """
+    n = ""
+    for i in range(4):
+        n = chr(m & 0xFF) + n
+        m >>= 8
+    return n
 
 def encrypt(xL, xR):
     """ 
@@ -76,13 +93,13 @@ def genSubkeys(key):
         P[i] = parray[i] ^ data
     # Generate subkey P-Boxes
     datal, datar = 0L, 0L
-    for i in range(ROUNDS+2):
+    for i in range(0, ROUNDS+2, 2):
         datal, datar = encrypt(datal, datar)
         P[i] = datal
         P[i+1] = datar
     # Generate  subkey S-boxes
     for i in range(4):
-        for j in range(256):
+        for j in range(0, 256, 2):
             datal, datar = encrypt(datal, datar)
             S[i][j] = datal
             S[i][j+1] = datar
@@ -96,6 +113,7 @@ def F(x):
     b = x & 0x00FF
     x >>= 8
     a = x & 0x00FF
+#    print a, b, c, d
     f = (S[0][a] + S[1][b] ^ S[2][c]) + S[3][d]
     return f
     
