@@ -20,6 +20,7 @@
 from blowfish_constants import *
 ROUNDS = 16 # You shouldn't change this unless you have a good reason
 S, P = sboxes, parray
+MOD = 0xFFFFFFFF
 
 def strToInt(m):
     """ Pack 4-char string m into a int for use in blowfish """
@@ -112,7 +113,7 @@ def F(x):
     b = x & 0x00FF
     x >>= 8
     a = x & 0x00FF
-    f = (S[0][a] + S[1][b] ^ S[2][c]) + S[3][d]
+    f = ((((S[0][a] + S[1][b]) % MOD) ^ S[2][c]) + S[3][d]) % MOD
     return f
     
 
