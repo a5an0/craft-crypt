@@ -7,7 +7,7 @@ Copyright (C) 2010  Alex Schoof
 What is Craft Crypt?
 --------------------
 
-Craft Crypt is a terminal-based application to send and recieve messages, through POP3 and SMTP (especially GMail), that are encrypted with Blowfish.
+Craft Crypt is a terminal-based application to send and recieve messages, through POP3 and SMTP (especially GMail), that are encrypted with Blowfish. All of the crypto is pure-python :)
 
 Status
 ------
